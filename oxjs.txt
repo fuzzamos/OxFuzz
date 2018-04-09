@@ -1,6 +1,6 @@
 #=============== config
 !varformat ox_var%01d
-!lineguard try { <line> } catch(e) {}
+#!lineguard try { <line> } catch(e) {}
 #=============== variables
 #common
 
@@ -58,9 +58,16 @@
 <Array_property>=length
 
 
+
+
 #=============== content
 !begin lines
 
-arr.<Array_method count=1>;
+var <new arr_name>=new Array(); 
+
+function func_<int min=0 max=9999 id=1>(){<arr_name>.<Array_method>;} 
+
+for(let i=0;i<2000;i++){func_<int min=0 max=9999 id=1>();}
+
 
 !end lines

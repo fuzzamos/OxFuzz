@@ -478,7 +478,8 @@ class Grammar(object):
                 # print context['lastvar']
                 if var_type == symbol:
                     ret_vars.append(var_name)
-                expanded = '/* newvar{' + var_name + ':' + var_type + '} */ var ' + var_name
+                expanded = var_name
+				#expanded = '/* newvar{' + var_name + ':' + var_type + '} */ var ' + var_name
             elif part['tagname'] in self._constant_types:
                 expanded = self._constant_types[part['tagname']]
             elif part['tagname'] in self._built_in_types:
