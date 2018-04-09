@@ -1,0 +1,66 @@
+#=============== config
+!varformat ox_var%01d
+!lineguard try { <line> } catch(e) {}
+#=============== variables
+#common
+
+<prototype>=prototype
+<caller>   =call
+<apply>    =apply
+
+#Function
+<Function_method>=call
+<Function_method>=apply
+<Function_method>=bind
+<Function_method>=toSource
+<Function_method>=toString
+
+<Function_property>=arguments
+<Function_property>=caller
+<Function_property>=length
+<Function_property>=name
+<Function_property>=prototype
+
+
+
+#Array
+
+<Array_method>=concat
+<Array_method>=copyWithin
+<Array_method>=every
+<Array_method>=fill
+<Array_method>=filter
+<Array_method>=find
+<Array_method>=findIndex
+<Array_method>=flatMap
+<Array_method>=flatten
+<Array_method>=forEach
+<Array_method>=includes
+<Array_method>=indexOf
+<Array_method>=join
+<Array_method>=keys
+<Array_method>=lastIndexOf
+<Array_method>=map
+<Array_method>=pop
+<Array_method>=push
+<Array_method>=reduce
+<Array_method>=reduceRight
+<Array_method>=reverse
+<Array_method>=shift
+<Array_method>=slice
+<Array_method>=some
+<Array_method>=sort
+<Array_method>=splice
+<Array_method>=toLocaleString
+<Array_method>=unshift
+<Array_method>=values
+
+<Array_property>=length
+
+
+#=============== content
+!begin lines
+
+arr.<Array_method count=1>;
+
+!end lines
