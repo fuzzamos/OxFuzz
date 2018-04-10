@@ -25,7 +25,7 @@ import sys
 
 from grammar import Grammar
 
-_N_MAIN_LINES = 1000
+_N_MAIN_LINES = 4
 _N_EVENTHANDLER_LINES = 500
 
 _N_ADDITIONAL_HTMLVARS = 5
@@ -331,26 +331,7 @@ def generate_new_sample(template,jsgrammar):
     """
 
     result = template
-
-    #css = cssgrammar.generate_symbol('rules')
-    #html = htmlgrammar.generate_symbol('bodyelements')
-    """
-    htmlctx = {
-        'htmlvars': [],
-        'htmlvarctr': 0,
-        'svgvarctr': 0,
-        'htmlvargen': ''
-    }
-    html = re.sub(
-        r'<[a-zA-Z0-9_-]+ ',
-        lambda match: add_html_ids(match, htmlctx),
-        html
-    )
-    generate_html_elements(htmlctx, _N_ADDITIONAL_HTMLVARS)
-
-    result = result.replace('<cssfuzzer>', css)
-    result = result.replace('<htmlfuzzer>', html)
-    """
+    
     handlers = False
     while '<jsfuzzer>' in result:
         numlines = _N_MAIN_LINES
@@ -358,13 +339,6 @@ def generate_new_sample(template,jsgrammar):
             numlines = _N_EVENTHANDLER_LINES
         else:
             handlers = True
-        """
-        result = result.replace(
-            '<jsfuzzer>',
-            generate_function_body(jsgrammar, htmlctx, numlines),
-            1
-        )
-        """
         result = result.replace(
             '<jsfuzzer>',
             jsgrammar._generate_code(numlines),
@@ -385,31 +359,15 @@ def generate_samples(grammar_dir, outfiles):
     f = open(os.path.join(grammar_dir, 'ox_template.html'))
     template = f.read()
     f.close()
-    """my
-    htmlgrammar = Grammar()
-    err = htmlgrammar.parse_from_file(os.path.join(grammar_dir, 'html.txt'))
-    # CheckGrammar(htmlgrammar)
-    if err > 0:
-        print('There were errors parsing grammar')
-        return
-
-    cssgrammar = Grammar()
-    err = cssgrammar.parse_from_file(os.path.join(grammar_dir, 'css.txt'))
-    # CheckGrammar(cssgrammar)
-    if err > 0:
-        print('There were errors parsing grammar')
-        return
-    """
+   
     jsgrammar = Grammar()
     err = jsgrammar.parse_from_file(os.path.join(grammar_dir, 'oxjs.txt'))
-    # CheckGrammar(jsgrammar)
+   
     if err > 0:
         print('There were errors parsing grammar')
         return
 
     for outfile in outfiles:
-        #result = generate_new_sample(template, htmlgrammar, cssgrammar,
-        #                             jsgrammar)
         result = generate_new_sample(template,jsgrammar)
 
         if result is not None:

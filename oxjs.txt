@@ -63,11 +63,11 @@
 #=============== content
 !begin lines
 
-var <new arr_name>=new Array(); 
+var <new arr_name>=new Array();
 
-function func_<int min=0 max=9999 id=1>(){<arr_name>.<Array_method>;} 
+function func_1(){<arr_name>.<Array_method>;}
 
-for(let i=0;i<2000;i++){func_<int min=0 max=9999 id=1>();}
+for(let i=0;i<2000;i++){func_1();}
 
 
 !end lines
