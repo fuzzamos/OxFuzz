@@ -57,6 +57,12 @@
 
 <Array_property>=length
 
+#Arguments
+
+<arg>=<string>
+<arg>=new Array(<int32>)
+<arg>=new ArrayBuffer(<int32>)
+<arg>=new Uint32Array(<int32>)
 
 
 
@@ -65,9 +71,18 @@
 
 var <new arr_name>=new Array();
 
-function func_1(){<arr_name>.<Array_method>;}
+function func_1(){<arr_name>.<Array_method>();}
+
+function func_2(){<arr_name>.<Array_method>(<arg>);}
+
+function func_3(){<arr_name>.<Array_method>(<arg>,<arg>);}
+
+function func_4(){<arr_name>.<Array_method>(<arg>,<arg>,<arg>);}
 
 for(let i=0;i<2000;i++){func_1();}
+for(let i=0;i<2000;i++){func_2();}
+for(let i=0;i<2000;i++){func_3();}
+for(let i=0;i<2000;i++){func_4();}
 
 
 !end lines
