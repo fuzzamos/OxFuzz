@@ -101,8 +101,6 @@ class Grammar(object):
         self._functions = {}
         self._line_guard = ''
         self._recursion_max = 50
-        self._interesting_line_prob = 0.9
-        self._max_vars_of_same_type = 5
         self._inheritance = {}
 
 
@@ -376,25 +374,17 @@ class Grammar(object):
                 some rules being impossible to resolve
             RecursionError: If maximum recursion level was reached.
         """
-
-        # print symbol
-
-        # print 'Expanding ' + symbol + ' in depth ' + str(recursion_depth)
-
         force_var_reuse = context['force_var_reuse']
 
         # Check if we already have a variable of the given type.
         if (symbol in context['variables'] and
                 symbol not in _NONINTERESTING_TYPES):
-            # print symbol + ':' + str(len(context['variables'][symbol])) + ':' + str(force_var_reuse)
-            if (force_var_reuse or
-                len(context['variables'][symbol]) < self._max_vars_of_same_type):
-                # print 'reusing existing var of type ' + symbol
                 context['force_var_reuse'] = False
                 variables = context['variables'][symbol]
                 return variables[random.randint(0, len(variables) - 1)]
                 # print 'Not reusing existing var of type ' + symbol
 
+        # Recursive call for multiple tag in one line
         creator = self._select_creator(
             symbol,
             recursion_depth,
@@ -455,7 +445,7 @@ class Grammar(object):
             #new\create tagname 
             elif rule['type'] == 'code' and 'new' in part:
 
-                print('debuginfo:\n'+'new tag:'+str(part['tagname']))
+                #print('Debug info:\n'+'new tag:'+str(part['tagname'])+'\n')
 
                 var_type = part['tagname']
                 context['lastvar'] += 1
@@ -486,7 +476,7 @@ class Grammar(object):
             
             #deal with user tag
             else:
-                print('debuginfo:\n''deal with user tag:'+str(part['tagname']))
+                #print('Debug info:\n'+'deal with user tag:'+str(part['tagname'])+'\n')
                 try:
                     expanded = self._generate(
                         part['tagname'],
