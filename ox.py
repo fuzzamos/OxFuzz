@@ -25,7 +25,7 @@ import sys
 
 from grammar import Grammar
 
-_N_MAIN_LINES = 10
+_N_MAIN_LINES = 9
 _N_EVENTHANDLER_LINES = 500
 
 _N_ADDITIONAL_HTMLVARS = 0

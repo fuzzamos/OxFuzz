@@ -93,28 +93,18 @@ class Grammar(object):
         self._all_rules = []
         self._interesting_lines = {}
         self._all_nonhelper_lines = []
-
         self._creator_cdfs = {}
         self._nonrecursivecreator_cdfs = {}
-
         self._var_format = 'var%05d'
-
         self._definitions_dir = '.'
-
         self._imports = {}
-
         self._functions = {}
-
         self._line_guard = ''
-
         self._recursion_max = 50
-        self._var_reuse_prob = 0.75
         self._interesting_line_prob = 0.9
         self._max_vars_of_same_type = 5
-
         self._inheritance = {}
 
-        self._cssgrammar = None
 
         # Helper dictionaries for creating built-in types.
         self._constant_types = {
@@ -277,7 +267,7 @@ class Grammar(object):
         for v in initial_variables:
             self._add_variable(v['name'], v['type'], context)
         
-        for index in range(num_lines-1):
+        for index in range(num_lines):
             tmp_context = context.copy()
             try:
                 creator = self._creators['line'][index]
@@ -285,18 +275,16 @@ class Grammar(object):
                 context = tmp_context
             except RecursionError as e:
                 print('Warning: ' + str(e))
-    
-        for i in range(len(context['lines']) // 100):
-            context['lines'].insert(
-                random.randint(0, len(context['lines'])),
-                'freememory();'
-            )
+                print('error in line'+str(index))
+        
+        #use !lineguard add _line_guard in each line
         if not self._line_guard:
             guarded_lines = context['lines']
         else:
             guarded_lines = []
             for line in context['lines']:
                 guarded_lines.append(self._line_guard.replace('<line>', line))
+        # complete generate
         return '\n'.join(guarded_lines)
 
     def _exec_function(self, function_name, attributes, context, ret_val):
@@ -360,6 +348,7 @@ class Grammar(object):
         idx = bisect.bisect_left(cdf, random.random(), 0, len(cdf))
         return creators[idx]
 
+    # deal with user tag
     def _generate(self, symbol, context,
                   recursion_depth=0, force_nonrecursive=False):
         """Generates a user-defined symbol.
@@ -399,8 +388,7 @@ class Grammar(object):
                 symbol not in _NONINTERESTING_TYPES):
             # print symbol + ':' + str(len(context['variables'][symbol])) + ':' + str(force_var_reuse)
             if (force_var_reuse or
-                    random.random() < self._var_reuse_prob or
-                    len(context['variables'][symbol]) > self._max_vars_of_same_type):
+                len(context['variables'][symbol]) < self._max_vars_of_same_type):
                 # print 'reusing existing var of type ' + symbol
                 context['force_var_reuse'] = False
                 variables = context['variables'][symbol]
@@ -463,7 +451,12 @@ class Grammar(object):
 
             if part['type'] == 'text':
                 expanded = part['text']
+
+            #new\create tagname 
             elif rule['type'] == 'code' and 'new' in part:
+
+                print('debuginfo:\n'+'new tag:'+str(part['tagname']))
+
                 var_type = part['tagname']
                 context['lastvar'] += 1
                 var_name = self._var_format % context['lastvar']
@@ -473,9 +466,12 @@ class Grammar(object):
                 if var_type == symbol:
                     ret_vars.append(var_name)
                 expanded = var_name
-				#expanded = '/* newvar{' + var_name + ':' + var_type + '} */ var ' + var_name
+            
+            #deal with constant tag
             elif part['tagname'] in self._constant_types:
                 expanded = self._constant_types[part['tagname']]
+            
+            #deal with built in tag
             elif part['tagname'] in self._built_in_types:
                 expanded = self._built_in_types[part['tagname']](part)
             elif part['tagname'] == 'call':
@@ -487,13 +483,16 @@ class Grammar(object):
                     context,
                     ''
                 )
+            
+            #deal with user tag
             else:
+                print('debuginfo:\n''deal with user tag:'+str(part['tagname']))
                 try:
                     expanded = self._generate(
                         part['tagname'],
                         context,
-                        recursion_depth + 1,
-                        force_nonrecursive
+                        recursion_depth + 1,# recursion depth
+                        force_nonrecursive  # no recursion flag
                     )
                 except RecursionError as e:
                     if not force_nonrecursive:
@@ -505,10 +504,10 @@ class Grammar(object):
                         )
                     else:
                         raise RecursionError(e)
-
+            # id in user tag
             if 'id' in part:
                 variable_ids[part['id']] = expanded
-
+            # beforeoutput in user tag
             if 'beforeoutput' in part:
                 expanded = self._exec_function(
                     part['beforeoutput'],
