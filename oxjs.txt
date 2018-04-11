@@ -57,12 +57,50 @@
 
 <Array_property>=length
 
+
+#Typed Array
+
+<typed_array>=new Int8Array(<int>)
+<typed_array>=new Uint8Array(<int>)
+<typed_array>=new Uint8ClampedArray(<int>)
+<typed_array>=new Int16Array(<int>)
+<typed_array>=new Uint16Array(<int>)
+<typed_array>=new Int32Array(<int>)
+<typed_array>=new Uint32Array(<int>)
+<typed_array>=new Float32Array(<int>)
+<typed_array>=new Float64Array(<int>)
+
+#Array
+
+<array>=
+
+#Symbol
+
+<symbol>
+
+#Object
+
+<object>=<array>
+<object>=<symbol>
+<object>=<typed_array>
+
+
+
+#Basic type
+
+<basic_type>=<int>
+<basic_type>=<string>
+<basic_type>=<double>
+<basic_type>=null
+<basic_type>=<symbol>
+
 #Arguments
 
-<arg>=<string>
-<arg>=new Array(<int32>)
-<arg>=new ArrayBuffer(<int32>)
-<arg>=new Uint32Array(<int32>)
+<arg>=<basic_type>
+<arg>=<symbol>
+<arg>=<object>
+
+
 
 
 
