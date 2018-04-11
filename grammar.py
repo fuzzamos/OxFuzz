@@ -276,22 +276,16 @@ class Grammar(object):
 
         for v in initial_variables:
             self._add_variable(v['name'], v['type'], context)
-        self._add_variable('document', 'Document', context)
-        self._add_variable('window', 'Window', context)
-
-        while len(context['lines']) < num_lines:
+        
+        for index in range(num_lines-1):
             tmp_context = context.copy()
             try:
-                if (random.random() < self._interesting_line_prob) and (len(tmp_context['interesting_lines']) > 0):
-                    tmp_context['force_var_reuse'] = True
-                    lineno = random.choice(tmp_context['interesting_lines'])
-                else:
-                    lineno = random.choice(self._all_nonhelper_lines)
-                creator = self._creators['line'][lineno]
+                creator = self._creators['line'][index]
                 self._expand_rule('line', creator, tmp_context, 0, False)
                 context = tmp_context
             except RecursionError as e:
                 print('Warning: ' + str(e))
+    
         for i in range(len(context['lines']) // 100):
             context['lines'].insert(
                 random.randint(0, len(context['lines'])),
@@ -526,11 +520,11 @@ class Grammar(object):
             ret_parts.append(expanded)
 
         # Add all newly created variables to the context
+        # add additional lines
         additional_lines = []
         for v in new_vars:
             if v['type'] not in _NONINTERESTING_TYPES:
                 self._add_variable(v['name'], v['type'], context)
-                additional_lines.append("if (!" + v['name'] + ") { " + v['name'] + " = GetVariable(fuzzervars, '" + v['type'] + "'); } else { " + self._get_variable_setters(v['name'], v['type']) + " }")
 
         # Return the result.
         # In case of 'ordinary' grammar rules, return the filled rule.
